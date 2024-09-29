@@ -24,7 +24,6 @@ resource "aws_lambda_function" "authentication_lambda" {
       DATABASE_URL = "postgresql://${aws_rds_cluster.meu_banco_de_dados.master_username}:${var.db_password}@${aws_rds_cluster.meu_banco_de_dados.endpoint}:${aws_rds_cluster.meu_banco_de_dados.port}/${aws_rds_cluster.meu_banco_de_dados.database_name}"
     }
   }
-}
 
   # Políticas de permissão para a Lambda
   managed_policy_arns = [
