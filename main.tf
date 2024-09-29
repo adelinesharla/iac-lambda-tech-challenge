@@ -7,6 +7,16 @@ terraform {
   backend "s3" {}
 }
 
+data "terraform_remote_state" "banco_de_dados" {
+  backend = "s3"
+
+  config = {
+    bucket = var.bucket_name
+    key    = var.bucket_key
+    region = "us-east-1"
+  }
+}
+
 # Função Lambda
 resource "aws_lambda_function" "authentication_lambda" {
   function_name = "authentication_lambda"
@@ -21,7 +31,7 @@ resource "aws_lambda_function" "authentication_lambda" {
   # Ambiente de execução da Lambda
   environment {
     variables = {
-      DATABASE_URL = "postgresql://${aws_rds_cluster.meu_banco_de_dados.master_username}:${var.db_password}@${aws_rds_cluster.meu_banco_de_dados.endpoint}:${aws_rds_cluster.meu_banco_de_dados.port}/${aws_rds_cluster.meu_banco_de_dados.database_name}"
+       DATABASE_URL = "postgresql://${data.terraform_remote_state.banco_de_dados.outputs.db_username}:${var.db_password}@${data.terraform_remote_state.banco_de_dados.outputs.db_endpoint}:${data.terraform_remote_state.banco_de_dados.outputs.db_port}/${data.terraform_remote_state.banco_de_dados.outputs.db_name}"
     }
   }
 
