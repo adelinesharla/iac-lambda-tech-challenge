@@ -3,6 +3,10 @@ provider "aws" {
   region = var.aws_region 
 }
 
+terraform {
+  backend "s3" {}
+}
+
 # Função Lambda
 resource "aws_lambda_function" "authentication_lambda" {
   function_name = "authentication_lambda"
