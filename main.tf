@@ -34,6 +34,7 @@ resource "aws_lambda_function" "authentication_lambda" {
        DATABASE_URL = "postgresql://${data.terraform_remote_state.banco_de_dados.outputs.db_username}:${var.db_password}@${data.terraform_remote_state.banco_de_dados.outputs.db_endpoint}:${data.terraform_remote_state.banco_de_dados.outputs.db_port}/${data.terraform_remote_state.banco_de_dados.outputs.db_name}"
     }
   }
+}
 
 # Role IAM para a Lambda
 resource "aws_iam_role" "lambda_role" {
