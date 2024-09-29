@@ -17,6 +17,31 @@ data "terraform_remote_state" "banco_de_dados" {
   }
 }
 
+# Role IAM para a Lambda (não usado no Academy)
+# resource "aws_iam_role" "lambda_role" {
+#   name = "lambda_role"
+
+#   assume_role_policy = jsonencode({
+#     Version = "2012-10-17"
+#     Statement = [
+#       {
+#         Action = "sts:AssumeRole"
+#         Effect = "Allow"
+#         Principal  = {
+#           Service = "lambda.amazonaws.com"  
+# 
+#         }
+#       },
+#     ]
+#   })
+
+  # Políticas de permissão para a Lambda (ajuste conforme necessário)
+#   managed_policy_arns = [ 
+#     "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+#     "arn:aws:iam::aws:policy/AmazonRDSDataFullAccess" 
+#   ]
+# }
+
 # Função Lambda
 resource "aws_lambda_function" "authentication_lambda" {
   function_name = "authentication_lambda"
@@ -34,31 +59,6 @@ resource "aws_lambda_function" "authentication_lambda" {
        DATABASE_URL = "postgresql://${data.terraform_remote_state.banco_de_dados.outputs.db_username}:${var.db_password}@${data.terraform_remote_state.banco_de_dados.outputs.db_endpoint}:${data.terraform_remote_state.banco_de_dados.outputs.db_port}/${data.terraform_remote_state.banco_de_dados.outputs.db_name}"
     }
   }
-}
-
-# Role IAM para a Lambda
-resource "aws_iam_role" "lambda_role" {
-  name = "lambda_role"
-
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Action = "sts:AssumeRole"
-        Effect = "Allow"
-        Principal  = {
-          Service = "lambda.amazonaws.com"  
-
-        }
-      },
-    ]
-  })
-
-  # Políticas de permissão para a Lambda (ajuste conforme necessário)
-  managed_policy_arns = [ 
-    "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
-    "arn:aws:iam::aws:policy/AmazonRDSDataFullAccess" 
-  ]
 }
 
 # API Gateway
