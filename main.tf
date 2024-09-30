@@ -58,6 +58,16 @@ resource "aws_api_gateway_integration" "authentication_integration" {
   uri                     = aws_lambda_function.authentication_lambda.invoke_arn
 }
 
+# Permissão para o API Gateway invocar a função Lambda
+resource "aws_lambda_permission" "api_gateway_invoke" {
+  statement_id  = "AllowExecutionFromAPIGateway"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.authentication_lambda.function_name
+  principal     = "apigateway.amazonaws.com"
+  
+  source_arn = "${aws_api_gateway_rest_api.authentication_api.execution_arn}/*/*"
+}
+
 # Deploy do API Gateway
 resource "aws_api_gateway_deployment" "authentication_deployment" {
   depends_on = [
